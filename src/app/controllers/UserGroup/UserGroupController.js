@@ -1,6 +1,4 @@
 const UserGroupService = require('../../../../domain/services/UserGroup/UserGroupServices');
-const SendGridSubscribers = require('../../Subscribers/SendGridSubscribers');
-const { Templates } = require('../../../../enums/EmailTemplatesEnum');
 
 class UserGroupController {
   constructor() {

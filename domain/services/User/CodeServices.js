@@ -1,7 +1,6 @@
 const { AppError } = require('../../../src/error/Errors');
 const CodeRepositories = require("../../repositories/User/CodeRepositories")
 const UserRepositories = require("../../repositories/User/UserRepositories")
-const SendGridSubscribers = require("../../../src/app/Subscribers/SendGridSubscribers")
 const { isAfter, parse,format } = require('date-fns');
 class CodeServices {
 

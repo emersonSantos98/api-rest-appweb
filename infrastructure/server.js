@@ -8,7 +8,7 @@ App.get(['/api/v1/', '/'], function (req, res) {
   res.redirect('/api/v1/api-docs');
 });
 
-App.listen(process.env.PORT || 3030, err => {
+App.listen(port, err => {
   if (err) console.log('Erro na configuração do servidor');
   if (
     process.env.NODE_ENV === 'development' ||
