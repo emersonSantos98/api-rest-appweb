@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Produtos', {
+    await queryInterface.createTable('Products', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -29,6 +29,9 @@ module.exports = {
       },
       profit_margin: {
         type: Sequelize.DECIMAL,
+      },
+      image: {
+        type: Sequelize.BLOB('long'),
       },
       createdAt: {
         allowNull: false,

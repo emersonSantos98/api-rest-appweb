@@ -13,7 +13,7 @@ const {
 
 const UserRepositories = require('../../repositories/User/UserRepositories');
 const UserGroupService = require('../UserGroup/UserGroupServices');
-class UserServices {
+class UsersService {
   constructor() {
     this.userRepositories = new UserRepositories();
     this.userGroupService = new UserGroupService();
@@ -134,4 +134,4 @@ class UserServices {
   }
 }
 
-module.exports = UserServices;
+module.exports = UsersService;
