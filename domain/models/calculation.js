@@ -16,6 +16,14 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id_product',
         as: 'product',
       });
+      models.User.hasMany(Calculation, {
+        foreignKey: 'id_user',
+        as: 'calculations',
+      });
+      models.Product.hasMany(Calculation, {
+        foreignKey: 'id_product',
+        as: 'calculations',
+      });
     }
   }
   Calculation.init(

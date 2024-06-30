@@ -10,6 +10,7 @@ const OrganizationRoutes = require('./Organization/Organization.routers');
 const AddressRoutes = require('./Address/Address.routers');
 const ProductRoutes = require('./Product/Product.route');
 const CalculationRoutes = require('./Calculation/Calculation.route');
+const ParameterRoutes = require('./Parameter/Parameter.route');
 
 const router = require('express').Router();
 
@@ -34,4 +35,5 @@ router.use('/organization', OrganizationRoutes);
 router.use('/address', AddressRoutes);
 router.use('/product', ProductRoutes);
 router.use('/calculation', CalculationRoutes);
+router.use('/parameter', ParameterRoutes);
 module.exports = router;

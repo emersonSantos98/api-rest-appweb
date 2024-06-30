@@ -10,7 +10,8 @@ class CalculationService {
 
   async createCalculation(calculation) {
     try {
-      const result = await this.calculationRepository.createCalculation(calculation);
+      const result =
+        await this.calculationRepository.createCalculation(calculation);
       return {
         message: 'Calculation created successfully',
         status: 'success',
@@ -34,7 +35,8 @@ class CalculationService {
   }
   async findOneCalculation(calculationId) {
     try {
-      const result = await this.calculationRepository.findOneCalculation(calculationId);
+      const result =
+        await this.calculationRepository.findOneCalculation(calculationId);
       return {
         message: 'Calculation found successfully',
         status: 'success',
@@ -46,7 +48,10 @@ class CalculationService {
   }
   async updateCalculation(calculationId, calculation) {
     try {
-      const result = await this.calculationRepository.updateCalculation(calculationId, calculation);
+      const result = await this.calculationRepository.updateCalculation(
+        calculationId,
+        calculation,
+      );
       return {
         message: 'Calculation updated successfully',
         status: 'success',
@@ -58,7 +63,8 @@ class CalculationService {
   }
   async deleteCalculation(calculationId) {
     try {
-      const result = await this.calculationRepository.deleteCalculation(calculationId);
+      const result =
+        await this.calculationRepository.deleteCalculation(calculationId);
       return {
         message: 'Calculation deleted successfully',
         status: 'success',
