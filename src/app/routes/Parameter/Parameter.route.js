@@ -1,5 +1,5 @@
 // Parameter.route.js
-const srouter = require('express').Router();
+const router = require('express').Router();
 const ParameterController = require('../../controllers/Parameter/Parameter.controller');
 const parameterController = new ParameterController();
 // Define your routes here
