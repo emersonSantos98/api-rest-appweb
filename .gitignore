@@ -394,3 +394,9 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+
+# qr code
+
+/download/qr-code/qr-code.pdf
+

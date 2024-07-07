@@ -53,11 +53,11 @@ class ProductController {
     return response.status(200).json(stock);
   }
 
-    async generateLabel(request, response) {
-      const {productId} = request.params;
-      const labelPath = await this.labelService.generateLabel(productId);
-        return response.download(labelPath, 'label.pdf');
-    }
+  async generateLabel(request, response) {
+    const { productId } = request.params;
+    const labelPath = await this.labelService.generateLabel(productId);
+    return response.download(labelPath);
+  }
 }
 
 module.exports = ProductController;
