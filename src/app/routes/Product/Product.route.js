@@ -24,8 +24,10 @@ router.post(
   productController.createProduct,
 );
 router.get('/findAll', productController.findAllProducts);
-router.get('/findOne', productController.findOneProduct);
+router.get('/findOne/:productId', productController.findOneProduct);
 router.put('/update/:id', productController.updateProduct);
 router.delete('/delete/:productId', productController.deleteProduct);
+router.get('/stock/:productVariationId', productController.getStock);
+router.get('/generate-label/:productId', productController.generateLabel);
 
 module.exports = router;

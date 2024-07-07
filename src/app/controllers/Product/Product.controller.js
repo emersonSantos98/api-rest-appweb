@@ -1,16 +1,19 @@
 // Product.controller.js
 const ProductService = require('../../../../domain/services/Product/Product.service');
-
+const LabelService = require('../../../../domain/services/LabelService');
 // Define your controller methods here
 
 class ProductController {
   constructor() {
     this.ProductService = new ProductService();
+    this.labelService = new LabelService();
     this.createProduct = this.createProduct.bind(this);
     this.findAllProducts = this.findAllProducts.bind(this);
     this.findOneProduct = this.findOneProduct.bind(this);
     this.updateProduct = this.updateProduct.bind(this);
     this.deleteProduct = this.deleteProduct.bind(this);
+    this.getStock = this.getStock.bind(this);
+    this.generateLabel = this.generateLabel.bind(this);
   }
 
   async createProduct(request, response) {
@@ -43,6 +46,18 @@ class ProductController {
     const product = await this.ProductService.deleteProduct(productId);
     return response.status(200).json(product);
   }
+
+  async getStock(request, response) {
+    const { productVariationId } = request.params;
+    const stock = await this.ProductService.getStock(productVariationId);
+    return response.status(200).json(stock);
+  }
+
+    async generateLabel(request, response) {
+      const {productId} = request.params;
+      const labelPath = await this.labelService.generateLabel(productId);
+        return response.download(labelPath, 'label.pdf');
+    }
 }
 
 module.exports = ProductController;

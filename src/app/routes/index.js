@@ -11,6 +11,8 @@ const AddressRoutes = require('./Address/Address.routers');
 const ProductRoutes = require('./Product/Product.route');
 const CalculationRoutes = require('./Calculation/Calculation.route');
 const ParameterRoutes = require('./Parameter/Parameter.route');
+const StockMovementRoutes = require('./StockMovement/StockMovement.route');
+const ProductVariationRoutes = require('./ProductVariation/ProductVariation.route');
 
 const router = require('express').Router();
 
@@ -36,4 +38,6 @@ router.use('/address', AddressRoutes);
 router.use('/product', ProductRoutes);
 router.use('/calculation', CalculationRoutes);
 router.use('/parameter', ParameterRoutes);
+router.use('/stockmovement', StockMovementRoutes);
+router.use('/productvariation', ProductVariationRoutes);
 module.exports = router;
