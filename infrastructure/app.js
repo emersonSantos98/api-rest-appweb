@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swaggerConfig');
-const routes = require('../src/app/routes/index');
+const routes = require('../src/app/routes/index'); // Verifique se este caminho está correto
 const { AppError } = require('../src/error/Errors');
 require('dotenv').config();
 
@@ -53,7 +53,7 @@ class App {
   }
 
   router() {
-    this.server.use('/api/v1', routes);
+    this.server.use('/api/v1', routes); // Verifique se as rotas estão sendo importadas e usadas corretamente
   }
 
   errorMiddleware() {

@@ -22,11 +22,21 @@ class ProductService {
     return {
       ...product,
       image: imageData,
-      total_cost: product.total_cost ? parseFloat(product.total_cost) : undefined,
-      profit_margin: product.profit_margin ? parseFloat(product.profit_margin) : undefined,
-      price_sale: product.price_sale ? parseFloat(product.price_sale) : undefined,
-      nominal_profit: product.nominal_profit ? parseFloat(product.nominal_profit) : undefined,
-      working_capital: product.working_capital ? parseFloat(product.working_capital) : undefined,
+      total_cost: product.total_cost
+        ? parseFloat(product.total_cost)
+        : undefined,
+      profit_margin: product.profit_margin
+        ? parseFloat(product.profit_margin)
+        : undefined,
+      price_sale: product.price_sale
+        ? parseFloat(product.price_sale)
+        : undefined,
+      nominal_profit: product.nominal_profit
+        ? parseFloat(product.nominal_profit)
+        : undefined,
+      working_capital: product.working_capital
+        ? parseFloat(product.working_capital)
+        : undefined,
     };
   }
 
@@ -45,7 +55,10 @@ class ProductService {
       await this._createCalculationIfNeeded(productData, result.id);
 
       if (product.variations && product.variations.length > 0) {
-        await this.productVariationService.createVariations(result.id, JSON.parse(product.variations));
+        await this.productVariationService.createVariations(
+          result.id,
+          JSON.parse(product.variations),
+        );
       }
 
       return {
@@ -59,7 +72,11 @@ class ProductService {
   }
 
   async _createCalculationIfNeeded(productData, productId) {
-    if (productData.price_sale !== undefined && productData.nominal_profit !== undefined && productData.working_capital !== undefined) {
+    if (
+      productData.price_sale !== undefined &&
+      productData.nominal_profit !== undefined &&
+      productData.working_capital !== undefined
+    ) {
       await this.calculationService.createCalculation({
         id_user: productData.id_user,
         id_product: productId,
@@ -74,6 +91,23 @@ class ProductService {
   async findAllProducts() {
     try {
       const result = await this.productRepository.findAllProducts();
+      /* percorre o array de produtos e para cada produto, acessa o array de variações e calcula o estoque total e adicionar a coluna 'generalStock' no produto */
+      /* lembre de usar o dataValues para acessar os valores do objeto */
+      /* formate a data de criação do produto para o formato '30 Abr 2020' */
+      /* formatar o total_cost para 2 casas decimais */
+      result.forEach(product => {
+        let generalStock = 0;
+        product.variations.forEach(variation => {
+          generalStock += variation.stock;
+        });
+        product.dataValues.created_at = moment(
+          product.dataValues.created_at,
+        ).format('DD MMM YYYY');
+        product.dataValues.generalStock = generalStock;
+        product.dataValues.total_cost = parseFloat(
+          product.dataValues.total_cost,
+        ).toFixed(2);
+      });
       return {
         message: 'Products found successfully',
         status: 'success',
@@ -101,7 +135,10 @@ class ProductService {
     const productData = this._parseProductData({ product });
 
     try {
-      const result = await this.productRepository.updateProduct(productId, productData);
+      const result = await this.productRepository.updateProduct(
+        productId,
+        productData,
+      );
       return {
         message: 'Product updated successfully',
         status: 'success',
@@ -127,7 +164,8 @@ class ProductService {
 
   async getStock(productVariationId) {
     try {
-      const stock = await this.productVariationService.getStock(productVariationId);
+      const stock =
+        await this.productVariationService.getStock(productVariationId);
       return {
         message: 'Stock retrieved successfully',
         status: 'success',
@@ -137,7 +175,6 @@ class ProductService {
       throw new AppError(400, error.message);
     }
   }
-
 }
 
 module.exports = ProductService;
