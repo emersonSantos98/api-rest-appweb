@@ -10,7 +10,6 @@ const createFile = (filePath, content) => {
 const generateMethod = methodName => {
   const baseDir = path.resolve(__dirname);
 
-  // Paths for the new files
   const controllerPath = path.join(
     baseDir,
     'src/app/controllers',
@@ -36,7 +35,6 @@ const generateMethod = methodName => {
     `${methodName}.repository.js`,
   );
 
-  // Content templates for the new files
   const controllerContent = `// ${methodName}.controller.js
 const ${methodName}Service = require('../../../../domain/services/${methodName}/${methodName}.service');
 
@@ -196,14 +194,12 @@ class ${methodName}Repository {
 module.exports = ${methodName}Repository;
 `;
 
-  // Create the new files with the content templates
   createFile(controllerPath, controllerContent);
   createFile(routePath, routeContent);
   createFile(servicePath, serviceContent);
   createFile(repositoryPath, repositoryContent);
 };
 
-// Get the method name from the command line arguments
 const methodName = process.argv[2];
 if (!methodName) {
   console.error('Please provide a method name.');

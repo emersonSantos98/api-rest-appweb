@@ -91,10 +91,6 @@ class ProductService {
   async findAllProducts() {
     try {
       const result = await this.productRepository.findAllProducts();
-      /* percorre o array de produtos e para cada produto, acessa o array de variações e calcula o estoque total e adicionar a coluna 'generalStock' no produto */
-      /* lembre de usar o dataValues para acessar os valores do objeto */
-      /* formate a data de criação do produto para o formato '30 Abr 2020' */
-      /* formatar o total_cost para 2 casas decimais */
       result.forEach(product => {
         let generalStock = 0;
         product.variations.forEach(variation => {
