@@ -23,14 +23,17 @@ class generateShippingLabelsService {
         const declarationPage = pages[i + half];
 
         const [embeddedLabelPage] = await newPdfDoc.embedPages([labelPage]);
-        const [embeddedDeclarationPage] = declarationPage ? await newPdfDoc.embedPages([declarationPage]) : [null];
+        const [embeddedDeclarationPage] = declarationPage
+          ? await newPdfDoc.embedPages([declarationPage])
+          : [null];
 
         // Create a new page with A4 dimensions (210mm x 297mm)
         const newPage = newPdfDoc.addPage([595.28, 841.89]); // A4 size in points
 
         // Get the dimensions of the original pages
         const { width: labelWidth, height: labelHeight } = labelPage.getSize();
-        const { width: declarationWidth, height: declarationHeight } = declarationPage.getSize();
+        const { width: declarationWidth, height: declarationHeight } =
+          declarationPage.getSize();
         // Draw the declaration page vertically on the new A4 page
         if (embeddedDeclarationPage) {
           newPage.drawPage(embeddedDeclarationPage, {
@@ -49,7 +52,10 @@ class generateShippingLabelsService {
       }
 
       const pdfBytes = await newPdfDoc.save();
-      const outputFilePath = path.join(__dirname, '../../../download/ShippingLabels/output.pdf');
+      const outputFilePath = path.join(
+        __dirname,
+        '../../../download/ShippingLabels/output.pdf',
+      );
       fs.writeFileSync(outputFilePath, pdfBytes);
 
       return outputFilePath;

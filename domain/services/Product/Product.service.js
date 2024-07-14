@@ -88,14 +88,48 @@ class ProductService {
     }
   }
 
-  async findAllProducts() {
+  async _mapaVariacoes(variations) {
+    const variacaoMap = {};
+
+    variations.forEach(variation => {
+      const { color, size, stock, barcode, productId } = variation;
+      if (!variacaoMap[color]) {
+        variacaoMap[color] = {
+          grade: [],
+          stock: 0,
+          barcode: '',
+          productId: productId,
+        };
+      }
+
+      variacaoMap[color].grade.push(size);
+      variacaoMap[color].stock += stock;
+      variacaoMap[color].barcode = barcode;
+    });
+
+    return variacaoMap;
+  }
+
+  async findAllProducts(query) {
     try {
-      const result = await this.productRepository.findAllProducts();
-      result.forEach(product => {
+      const page = parseInt(query.page) || 1;
+      const pageSize = parseInt(query.pageSize) || 10;
+
+      const { data, meta } = await this.productRepository.findAllProducts(
+        query,
+        page,
+        pageSize,
+      );
+
+      for (const product of data) {
         let generalStock = 0;
+
         product.variations.forEach(variation => {
           generalStock += variation.stock;
         });
+
+        const mappedVariations = await this._mapaVariacoes(product.variations);
+
         product.dataValues.created_at = moment(
           product.dataValues.created_at,
         ).format('DD MMM YYYY');
@@ -103,11 +137,14 @@ class ProductService {
         product.dataValues.total_cost = parseFloat(
           product.dataValues.total_cost,
         ).toFixed(2);
-      });
+        product.dataValues.mappedVariations = mappedVariations;
+      }
+
       return {
         message: 'Products found successfully',
         status: 'success',
-        data: result,
+        data,
+        meta: meta,
       };
     } catch (error) {
       throw new AppError(400, error.message);

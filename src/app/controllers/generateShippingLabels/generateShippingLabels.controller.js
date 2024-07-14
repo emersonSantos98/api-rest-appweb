@@ -10,10 +10,7 @@ class generateShippingLabelsController {
 
   async creategenerateShippingLabels(request, response) {
     try {
-      const outputFilePath =
-        await this.generateShippingLabelsService.creategenerateShippingLabels(
-          request.file,
-        );
+      const outputFilePath = await this.generateShippingLabelsService.creategenerateShippingLabels(request.file);
       return response.download(outputFilePath);
     } catch (error) {
       response.status(500).json({ message: error.message });

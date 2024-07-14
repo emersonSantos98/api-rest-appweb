@@ -24,7 +24,8 @@ class ProductVariationService {
   }
 
   async createVariations(productId, variations) {
-
+    console.log('productId', productId)
+    console.log('variations', variations)
     try {
       const variationsData = variations.map(variation => ({
         ...variation,
