@@ -57,7 +57,7 @@ class ProductController {
     const { productId } = request.params;
     const labelPath = await this.labelService.generateLabel(
       productId,
-      request.body.labelCountPerVariation,
+      request.query.labelCountPerVariation,
     );
     return response.download(labelPath);
   }
