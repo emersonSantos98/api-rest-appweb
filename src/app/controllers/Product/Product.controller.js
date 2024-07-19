@@ -55,7 +55,10 @@ class ProductController {
 
   async generateLabel(request, response) {
     const { productId } = request.params;
-    const labelPath = await this.labelService.generateLabel(productId);
+    const labelPath = await this.labelService.generateLabel(
+      productId,
+      request.body.labelCountPerVariation,
+    );
     return response.download(labelPath);
   }
 }
