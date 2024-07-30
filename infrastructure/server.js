@@ -6,7 +6,7 @@ const app = require('./app').server;
 
 const port = process.env.PORT || 3030;
 const isDevelopment = process.env.NODE_ENV === 'development';
-
+console.log('isDevelopment', isDevelopment);
 if (isDevelopment) {
   const key = fs.readFileSync(
     path.resolve('C:/Users/emers/192.168.18.27-key.pem'),
@@ -31,17 +31,9 @@ if (isDevelopment) {
   app.listen(port, err => {
     if (err) {
       console.log('Erro na configuração do servidor');
-    } else if (
-      process.env.NODE_ENV === 'production' ||
-      process.env.NODE_ENV === 'test' ||
-      process.env.NODE_ENV === 'dev'
-    ) {
-      console.log(
-        `Server rodando em ambiente de desenvolvimento em ${process.env.BASE_URL}/api/v1`,
-      );
     } else {
       console.log(
-        `App rodando em ambiente de produção em ${process.env.URL}/api/v1`,
+        `Server rodando em ${process.env.BASE_URL}:${process.env.PORT}/api/v1`,
       );
     }
   });

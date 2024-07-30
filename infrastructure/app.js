@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swaggerConfig');
-const routes = require('../src/app/routes/index'); // Verifique se este caminho está correto
+const routes = require('../src/app/routes/index');
 const { AppError } = require('../src/error/Errors');
 require('dotenv').config();
 
@@ -25,13 +25,13 @@ class App {
   middlewares() {
     this.server.use(helmet());
     this.server.use(
-        cors({
-          origin: baseURLCors,
-          methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-          credentials: true,
-          optionsSuccessStatus: 204,
-          allowedHeaders: ['Content-Type', 'Authorization', 'X-Custom-Header'],
-        }),
+      cors({
+        origin: baseURLCors,
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        credentials: true,
+        optionsSuccessStatus: 204,
+        allowedHeaders: ['Content-Type', 'Authorization', 'X-Custom-Header'],
+      }),
     );
 
     this.server.use(express.json());
@@ -46,9 +46,9 @@ class App {
     });
 
     this.server.use(
-        '/api/v1/api-docs',
-        swaggerUi.serve,
-        swaggerUi.setup(swaggerSpec),
+      '/api/v1/api-docs',
+      swaggerUi.serve,
+      swaggerUi.setup(swaggerSpec),
     );
   }
 
