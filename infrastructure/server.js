@@ -1,12 +1,12 @@
 require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
 const fs = require('fs');
 const https = require('https');
-const http = require('http');
 const path = require('path');
 const app = require('./app').server;
 
 const port = process.env.PORT || 3030;
-const host = process.env.BASE_URL || 'localhost';
+const host =
+  process.env.NODE_ENV === 'development' ? '192.168.18.27' : '0.0.0.0';
 
 if (process.env.NODE_ENV === 'development') {
   // Ler os certificados
@@ -30,7 +30,7 @@ if (process.env.NODE_ENV === 'development') {
     }
   });
 } else {
-  http.createServer(app).listen(port, host, err => {
+  app.listen(port, host, err => {
     if (err) {
       console.log('Erro na configuração do servidor');
     } else {
