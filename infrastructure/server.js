@@ -6,8 +6,7 @@ const path = require('path');
 const app = require('./app').server;
 
 const port = process.env.PORT || 3030;
-const host =
-  process.env.NODE_ENV === 'development' ? '192.168.18.27' : '0.0.0.0';
+const host = process.env.BASE_URL || 'localhost';
 
 if (process.env.NODE_ENV === 'development') {
   // Ler os certificados
