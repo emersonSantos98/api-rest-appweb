@@ -1,24 +1,31 @@
-require('dotenv').config();
+require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
 const fs = require('fs');
 const https = require('https');
 const path = require('path');
-const app = require('./app').server; // Importa a instância do Express do app.js
+const app = require('./app').server;
 
 const port = process.env.PORT || 3030;
 
 // Ler os certificados
-const key = fs.readFileSync(
-  path.resolve('C:/Users/emers/192.168.18.27-key.pem'),
-);
-const cert = fs.readFileSync(path.resolve('C:/Users/emers/192.168.18.27.pem'));
+const keyPath =
+  process.env.NODE_ENV === 'development'
+    ? 'C:/Users/emers/192.168.18.27-key.pem'
+    : '/path/to/production-key.pem';
+const certPath =
+  process.env.NODE_ENV === 'development'
+    ? 'C:/Users/emers/192.168.18.27.pem'
+    : '/path/to/production-cert.pem';
+
+const key = fs.readFileSync(path.resolve(keyPath));
+const cert = fs.readFileSync(path.resolve(certPath));
 
 const options = {
   key: key,
   cert: cert,
 };
 
-// Modificação para escutar em todas as interfaces de rede
-const host = '192.168.18.27';
+const host =
+  process.env.NODE_ENV === 'development' ? '192.168.18.27' : '0.0.0.0';
 
 https.createServer(options, app).listen(port, host, err => {
   if (err) {
