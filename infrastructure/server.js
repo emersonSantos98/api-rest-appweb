@@ -1,16 +1,13 @@
 require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
 const fs = require('fs');
 const https = require('https');
-const http = require('http');
 const path = require('path');
 const app = require('./app').server;
 
 const port = process.env.PORT || 3030;
 const isDevelopment = process.env.NODE_ENV === 'development';
-const host = isDevelopment ? '192.168.18.27' : '0.0.0.0';
 
 if (isDevelopment) {
-  // Ler os certificados
   const key = fs.readFileSync(
     path.resolve('C:/Users/emers/192.168.18.27-key.pem'),
   );
@@ -23,20 +20,29 @@ if (isDevelopment) {
     cert: cert,
   };
 
-  https.createServer(options, app).listen(port, host, err => {
+  https.createServer(options, app).listen(port, '192.168.18.27', err => {
     if (err) {
       console.log('Erro na configuração do servidor');
     } else {
-      console.log(`Server rodando em https://${host}:${port}/api/v1`);
+      console.log(`Server rodando em https://192.168.18.27:${port}/api/v1`);
     }
   });
 } else {
-  // No ambiente de produção, utilize HTTP já que o Railway cuida do HTTPS
-  http.createServer(app).listen(port, host, err => {
+  app.listen(port, err => {
     if (err) {
       console.log('Erro na configuração do servidor');
+    } else if (
+      process.env.NODE_ENV === 'production' ||
+      process.env.NODE_ENV === 'test' ||
+      process.env.NODE_ENV === 'dev'
+    ) {
+      console.log(
+        `Server rodando em ambiente de desenvolvimento em ${process.env.BASE_URL}/api/v1`,
+      );
     } else {
-      console.log(`Server rodando em ${process.env.BASE_URL}/api/v1`);
+      console.log(
+        `App rodando em ambiente de produção em ${process.env.URL}/api/v1`,
+      );
     }
   });
 }
