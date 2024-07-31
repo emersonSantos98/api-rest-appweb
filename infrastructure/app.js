@@ -53,7 +53,7 @@ class App {
   }
 
   router() {
-    this.server.use('/api/v1', routes); // Verifique se as rotas estão sendo importadas e usadas corretamente
+    this.server.use('/api/v1', routes);
   }
 
   errorMiddleware() {
