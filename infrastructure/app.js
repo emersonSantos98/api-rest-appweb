@@ -9,7 +9,7 @@ const routes = require('../src/app/routes/index');
 const { AppError } = require('../src/error/Errors');
 require('dotenv').config();
 
-const baseURLCors = process.env.FRONTEND_URL.split(',');
+const baseURLCors = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [];
 
 global._ = require('lodash');
 
@@ -24,9 +24,16 @@ class App {
 
   middlewares() {
     this.server.use(helmet());
+
     this.server.use(
         cors({
-          origin: baseURLCors,
+          origin: (origin, callback) => {
+            if (baseURLCors.includes(origin) || !origin) {
+              callback(null, true);
+            } else {
+              callback(new Error('Not allowed by CORS'));
+            }
+          },
           methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
           credentials: true,
           optionsSuccessStatus: 204,
@@ -34,15 +41,9 @@ class App {
         }),
     );
 
-    this.server.use(express.json({ limit: '20mb' })); // Ajuste o limite conforme necessário
-    this.server.use(express.urlencoded({ limit: '20mb', extended: true })); // Ajuste o limite conforme necessário
-
-    this.server.use((req, res, next) => {
-      res.header('Access-Control-Allow-Origin', '*');
-      res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-      res.header('Access-Control-Allow-Headers', 'Content-Type');
-      next();
-    });
+    this.server.use(express.json());
+    this.server.use(bodyParser.json());
+    this.server.use(bodyParser.urlencoded({ extended: true }));
 
     this.server.use(
         '/api/v1/api-docs',
@@ -56,7 +57,7 @@ class App {
   }
 
   errorMiddleware() {
-    this.server.use((error, request, response, _) => {
+    this.server.use((error, request, response, next) => {
       if (error instanceof AppError) {
         return response.status(error.statusCode).json({
           status: 'error',
