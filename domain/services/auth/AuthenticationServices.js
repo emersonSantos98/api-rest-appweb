@@ -50,8 +50,7 @@ class AuthenticationServices {
       refreshToken: token.refreshToken,
       userData: {
         uuid: user.uuid,
-        full_name: user.name,
-        username: user.name,
+        full_name: user.first_name + ' ' + user.last_name,
         email: user.email,
         role: user.role.name,
         status: 'ativo',
