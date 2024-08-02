@@ -10,7 +10,7 @@ const { AppError } = require('../src/error/Errors');
 require('dotenv').config();
 
 const baseURLCors = process.env.FRONTEND_URL.split(',');
-console.log('baseURLCors', baseURLCors);
+
 global._ = require('lodash');
 
 class App {
@@ -38,12 +38,13 @@ class App {
     this.server.use(bodyParser.json());
     this.server.use(bodyParser.urlencoded({ extended: true }));
 
-    this.server.use((req, res, next) => {
-      res.header('Access-Control-Allow-Origin', '*');
-      res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-      res.header('Access-Control-Allow-Headers', 'Content-Type');
-      next();
-    });
+    // Remova as configurações manuais de CORS se estiver usando o middleware cors acima
+    // this.server.use((req, res, next) => {
+    //   res.header('Access-Control-Allow-Origin', '*');
+    //   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    //   res.header('Access-Control-Allow-Headers', 'Content-Type');
+    //   next();
+    // });
 
     this.server.use(
       '/api/v1/api-docs',
