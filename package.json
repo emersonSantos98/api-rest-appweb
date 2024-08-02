@@ -14,14 +14,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@replytechnologies/zpl-image-convert": "^0.0.3",
-    "@sendgrid/mail": "^7.7.0",
-    "@types/file-saver": "^2.0.7",
     "axios": "^1.5.0",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.2",
-    "buffer": "^6.0.3",
-    "canvas": "^2.11.2",
     "cheerio": "^1.0.0-rc.12",
     "cors": "^2.8.5",
     "cpf-cnpj-validator": "^1.0.3",
@@ -45,12 +40,12 @@
     "path": "^0.12.7",
     "pdf-lib": "^1.17.1",
     "pdfkit": "^0.15.0",
+    "qrcode": "^1.5.3",
     "sequelize": "^6.32.1",
     "sequelize-cli": "^6.6.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
-    "uuid": "^9.0.0",
-    "zpl-image": "^0.2.0"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "eslint": "^8.48.0",

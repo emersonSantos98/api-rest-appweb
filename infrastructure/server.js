@@ -1,4 +1,4 @@
-quire('dotenv').config();
+require('dotenv').config();
 
 const App = require('./app').server;
 
