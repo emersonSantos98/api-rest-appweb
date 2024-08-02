@@ -1,26 +1,40 @@
-require('dotenv').config();
-
-const App = require('./app').server;
+require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
+const fs = require('fs');
+const https = require('https');
+const path = require('path');
+const app = require('./app').server;
 
 const port = process.env.PORT || 3030;
+const isDevelopment = process.env.NODE_ENV === 'development';
+console.log('isDevelopment', isDevelopment);
+if (isDevelopment) {
+  const key = fs.readFileSync(
+    path.resolve('C:/Users/emers/192.168.18.27-key.pem'),
+  );
+  const cert = fs.readFileSync(
+    path.resolve('C:/Users/emers/192.168.18.27.pem'),
+  );
 
-App.get(['/api/v1/', '/'], function (req, res) {
-  res.redirect('/api/v1/api-docs');
-});
+  const options = {
+    key: key,
+    cert: cert,
+  };
 
-App.listen(port, err => {
-  if (err) console.log('Erro na configuração do servidor');
-  if (
-      process.env.NODE_ENV === 'production' ||
-      process.env.NODE_ENV === 'test' ||
-      process.env.NODE_ENV === 'dev'
-  ) {
-    console.log(
-        `server rodando em ambiente de desenvolvimento em ${process.env.BASE_URL}/api/v1`,
-    );
-  } else {
-    console.log(
-        `App rodando em ambiente de produção em ${process.env.URL}/api/v1`,
-    );
-  }
-});
+  https.createServer(options, app).listen(port, '192.168.18.27', err => {
+    if (err) {
+      console.log('Erro na configuração do servidor');
+    } else {
+      console.log(`Server rodando em https://192.168.18.27:${port}/api/v1`);
+    }
+  });
+} else {
+  app.listen(port, err => {
+    if (err) {
+      console.log('Erro na configuração do servidor');
+    } else {
+      console.log(
+        `Server rodando em ${process.env.BASE_URL}:${process.env.PORT}/api/v1`,
+      );
+    }
+  });
+}
