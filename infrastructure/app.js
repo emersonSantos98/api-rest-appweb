@@ -10,7 +10,7 @@ const { AppError } = require('../src/error/Errors');
 require('dotenv').config();
 
 const baseURLCors = process.env.FRONTEND_URL.split(',');
-
+console.log('baseURLCors', baseURLCors);
 global._ = require('lodash');
 
 class App {
