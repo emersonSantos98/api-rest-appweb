@@ -6,7 +6,7 @@ const app = require('./app').server;
 
 const port = process.env.PORT || 3030;
 const isDevelopment = process.env.NODE_ENV === 'development';
-console.log('isDevelopment', isDevelopment);
+
 if (isDevelopment) {
   const key = fs.readFileSync(
     path.resolve('C:/Users/emers/192.168.18.27-key.pem'),

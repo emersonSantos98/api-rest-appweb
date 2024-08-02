@@ -25,31 +25,29 @@ class App {
   middlewares() {
     this.server.use(helmet());
     this.server.use(
-      cors({
-        origin: baseURLCors,
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        credentials: true,
-        optionsSuccessStatus: 204,
-        allowedHeaders: ['Content-Type', 'Authorization', 'X-Custom-Header'],
-      }),
+        cors({
+          origin: baseURLCors,
+          methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+          credentials: true,
+          optionsSuccessStatus: 204,
+          allowedHeaders: ['Content-Type', 'Authorization', 'X-Custom-Header'],
+        }),
     );
 
-    this.server.use(express.json());
-    this.server.use(bodyParser.json());
-    this.server.use(bodyParser.urlencoded({ extended: true }));
+    this.server.use(express.json({ limit: '20mb' })); // Ajuste o limite conforme necessário
+    this.server.use(express.urlencoded({ limit: '20mb', extended: true })); // Ajuste o limite conforme necessário
 
-    // Remova as configurações manuais de CORS se estiver usando o middleware cors acima
-    // this.server.use((req, res, next) => {
-    //   res.header('Access-Control-Allow-Origin', '*');
-    //   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    //   res.header('Access-Control-Allow-Headers', 'Content-Type');
-    //   next();
-    // });
+    this.server.use((req, res, next) => {
+      res.header('Access-Control-Allow-Origin', '*');
+      res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+      res.header('Access-Control-Allow-Headers', 'Content-Type');
+      next();
+    });
 
     this.server.use(
-      '/api/v1/api-docs',
-      swaggerUi.serve,
-      swaggerUi.setup(swaggerSpec),
+        '/api/v1/api-docs',
+        swaggerUi.serve,
+        swaggerUi.setup(swaggerSpec),
     );
   }
 
