@@ -11,67 +11,62 @@ const generateMethod = methodName => {
   const baseDir = path.resolve(__dirname);
 
   const controllerPath = path.join(
-    baseDir,
-    'src/app/controllers',
-    methodName,
-    `${methodName}.controller.js`,
+      baseDir,
+      'src/controllers',
+      methodName,
+      `${methodName}.controller.js`,
   );
+
   const routePath = path.join(
-    baseDir,
-    'src/app/routes',
-    methodName,
-    `${methodName}.route.js`,
+      baseDir,
+      'src/routes',
+      `${methodName}.route.js`,
   );
-  const servicePath = path.join(
-    baseDir,
-    'domain/services',
-    methodName,
-    `${methodName}.service.js`,
-  );
-  const repositoryPath = path.join(
-    baseDir,
-    'domain/repositories',
-    methodName,
-    `${methodName}.repository.js`,
-  );
+
+  const serviceDir = path.join(baseDir, 'src/services', methodName);
+  const repositoryDir = path.join(baseDir, 'src/repositories', methodName);
+
+  const methods = ['create', 'update', 'find_all', 'find_one', 'delete'];
 
   const controllerContent = `// ${methodName}.controller.js
-const ${methodName}Service = require('../../../../domain/services/${methodName}/${methodName}.service');
-
-// Define your controller methods here
+const Create${methodName}Service = require('../../services/${methodName}/create_${methodName}.service');
+const Update${methodName}Service = require('../../services/${methodName}/update_${methodName}.service');
+const FindAll${methodName}Service = require('../../services/${methodName}/find_all_${methodName}.service');
+const FindOne${methodName}Service = require('../../services/${methodName}/find_one_${methodName}.service');
+const Delete${methodName}Service = require('../../services/${methodName}/delete_${methodName}.service');
 
 class ${methodName}Controller {
-  constructor() {
-    this.${methodName}Service = new ${methodName}Service();
-    this.create${methodName} = this.create${methodName}.bind(this);
-    this.findAll${methodName}s = this.findAll${methodName}s.bind(this);
-    this.findOne${methodName} = this.findOne${methodName}.bind(this);
-    this.update${methodName} = this.update${methodName}.bind(this);
-    this.delete${methodName} = this.delete${methodName}.bind(this);
+  async create${methodName}(req, res) {
+    const create${methodName}Service = new Create${methodName}Service();
+    const ${methodName.toLowerCase()} = await create${methodName}Service.execute(req.body);
+    return res.status(201).json(${methodName.toLowerCase()});
+  }
+  
+  async update${methodName}(req, res) {
+    const update${methodName}Service = new Update${methodName}Service();
+    const { id } = req.params;
+    const ${methodName.toLowerCase()} = await update${methodName}Service.execute(id, req.body);
+    return res.status(200).json(${methodName.toLowerCase()});
   }
 
-  async create${methodName}(request, response) {
-    const ${methodName.toLowerCase()} = await this.${methodName}Service.create${methodName}(request.body);
-    return response.status(201).json(${methodName.toLowerCase()});
+  async findAll${methodName}s(req, res) {
+    const findAll${methodName}Service = new FindAll${methodName}Service();
+    const ${methodName.toLowerCase()}s = await findAll${methodName}Service.execute(req.query);
+    return res.status(200).json(${methodName.toLowerCase()}s);
   }
-  async findAll${methodName}s(request, response) {
-    const ${methodName.toLowerCase()}s = await this.${methodName}Service.findAll${methodName}s(request.query);
-    response.status(200).json(${methodName.toLowerCase()}s);
+  
+  async findOne${methodName}(req, res) {
+    const findOne${methodName}Service = new FindOne${methodName}Service();
+    const { id } = req.params;
+    const ${methodName.toLowerCase()} = await findOne${methodName}Service.execute(id);
+    return res.status(200).json(${methodName.toLowerCase()});
   }
-  async findOne${methodName}(request, response) {
-    const { ${methodName.toLowerCase()}Id } = request.params;
-    const ${methodName.toLowerCase()} = await this.${methodName}Service.findOne${methodName}(${methodName.toLowerCase()}Id);
-    return response.status(200).json(${methodName.toLowerCase()});
-  }
-  async update${methodName}(request, response) {
-    const { ${methodName.toLowerCase()}Id } = request.params;
-    const ${methodName.toLowerCase()} = await this.${methodName}Service.update${methodName}(${methodName.toLowerCase()}Id, request.body);
-    return response.status(200).json(${methodName.toLowerCase()});
-  }
-  async delete${methodName}(request, response) {
-    const { ${methodName.toLowerCase()}Id } = request.params;
-    const ${methodName.toLowerCase()} = await this.${methodName}Service.delete${methodName}(${methodName.toLowerCase()}Id);
-    return response.status(200).json(${methodName.toLowerCase()});
+  
+  async delete${methodName}(req, res) {
+    const delete${methodName}Service = new Delete${methodName}Service();
+    const { id } = req.params;
+    const ${methodName.toLowerCase()} = await delete${methodName}Service.execute(id);
+    return res.status(200).json(${methodName.toLowerCase()});
   }
 }
 
@@ -80,124 +75,67 @@ module.exports = ${methodName}Controller;
 
   const routeContent = `// ${methodName}.route.js
 const router = require('express').Router();
-const ${methodName}Controller = require('../../controllers/${methodName}/${methodName}.controller');
+const ${methodName}Controller = require('../controllers/${methodName}.controller');
 const ${methodName.toLowerCase()}Controller = new ${methodName}Controller();
-// Define your routes here
 
 router.post('/create', ${methodName.toLowerCase()}Controller.create${methodName});
-router.get('/findAll', ${methodName.toLowerCase()}Controller.findAll${methodName}s);
-router.get('/findOne', ${methodName.toLowerCase()}Controller.findOne${methodName});
 router.put('/update/:id', ${methodName.toLowerCase()}Controller.update${methodName});
-router.delete('/delete/:id', ${methodName.toLowerCase()}Controller.delete${methodName});
+router.get('/', ${methodName.toLowerCase()}Controller.findAll${methodName}s);
+router.get('/:id', ${methodName.toLowerCase()}Controller.findOne${methodName});
+router.delete('/:id', ${methodName.toLowerCase()}Controller.delete${methodName});
 
 module.exports = router;
 `;
 
-  const serviceContent = `// ${methodName}.service.js
-// Define your service methods here
-const ${methodName}Repository = require('../../repositories/${methodName}/${methodName}.repository');
-const { AppError } = require('../../../src/error/Errors');
-
-class ${methodName}Service {
-  constructor() {
-    this.${methodName.toLowerCase()}Repository = new ${methodName}Repository();
-  }
-
-  async create${methodName}(${methodName.toLowerCase()}) {
-    try {
-      const result = await this.${methodName.toLowerCase()}Repository.create${methodName}(${methodName.toLowerCase()});
-      return {
-        message: '${methodName} created successfully',
-        status: 'success',
-        data: result,
-      };
-    } catch (error) {
-      throw new AppError(400, error.message);
-    }
-  }
-  async findAll${methodName}s() {
-    try {
-      const result = await this.${methodName.toLowerCase()}Repository.findAll${methodName}s();
-      return {
-        message: '${methodName}s found successfully',
-        status: 'success',
-        data: result,
-      };
-    } catch (error) {
-      throw new AppError(400, error.message);
-    }
-  }
-  async findOne${methodName}(${methodName.toLowerCase()}Id) {
-    try {
-      const result = await this.${methodName.toLowerCase()}Repository.findOne${methodName}(${methodName.toLowerCase()}Id);
-      return {
-        message: '${methodName} found successfully',
-        status: 'success',
-        data: result,
-      };
-    } catch (error) {
-      throw new AppError(400, error.message);
-    }
-  }
-  async update${methodName}(${methodName.toLowerCase()}Id, ${methodName.toLowerCase()}) {
-    try {
-      const result = await this.${methodName.toLowerCase()}Repository.update${methodName}(${methodName.toLowerCase()}Id, ${methodName.toLowerCase()});
-      return {
-        message: '${methodName} updated successfully',
-        status: 'success',
-        data: result,
-      };
-    } catch (error) {
-      throw new AppError(400, error.message);
-    }
-  }
-  async delete${methodName}(${methodName.toLowerCase()}Id) {
-    try {
-      const result = await this.${methodName.toLowerCase()}Repository.delete${methodName}(${methodName.toLowerCase()}Id);
-      return {
-        message: '${methodName} deleted successfully',
-        status: 'success',
-        data: result,
-      };
-    } catch (error) {
-      throw new AppError(400, error.message);
-    }
-  }
-}
-
-module.exports = ${methodName}Service;
-`;
-
-  const repositoryContent = `// ${methodName}.repository.js
-// Define your repository methods here
-const { ${methodName} } = require('../../models');
-class ${methodName}Repository {
-  // Example repository method
-
-  async create${methodName}(${methodName.toLowerCase()}) {
-    return await ${methodName}.create(${methodName.toLowerCase()});
-  }
-  async findAll${methodName}s() {
-    return await ${methodName}.findAll();
-  }
-  async findOne${methodName}(${methodName.toLowerCase()}Id) {
-    return await ${methodName}.findByPk(${methodName.toLowerCase()}Id);
-  }
-  async update${methodName}(${methodName.toLowerCase()}Id, ${methodName.toLowerCase()}) {
-    return await ${methodName}.update(${methodName.toLowerCase()}, { where: { id: ${methodName.toLowerCase()}Id } });
-  }
-  async delete${methodName}(${methodName.toLowerCase()}Id) {
-    return await ${methodName}.destroy({ where: { id: ${methodName.toLowerCase()}Id } });
-  }
-}
-
-module.exports = ${methodName}Repository;
-`;
-
   createFile(controllerPath, controllerContent);
   createFile(routePath, routeContent);
-  createFile(servicePath, serviceContent);
-  createFile(repositoryPath, repositoryContent);
+
+  methods.forEach(method => {
+    const servicePath = path.join(serviceDir, `${method}_${methodName}.service.js`);
+    const repositoryPath = path.join(repositoryDir, `${method}_${methodName}.repository.js`);
+
+    const serviceContent = `// ${method}_${methodName}.service.js
+const ${methodName}Repository = require('../../repositories/${methodName}/${method}_${methodName}.repository');
+const { AppError } = require('../../utils/errorHandler');
+
+class ${method.charAt(0).toUpperCase() + method.slice(1)}${methodName}Service {
+  async execute(${method === 'find_one' || method === 'delete' || method === 'update' ? 'id, ' : ''}${method === 'create' || method === 'update' ? `${methodName.toLowerCase()}` : ''}) {
+    try {
+      const ${methodName.toLowerCase()}Repository = new ${methodName}Repository();
+      const result = await ${methodName.toLowerCase()}Repository.${method}(${method === 'find_one' || method === 'delete' || method === 'update' ? 'id, ' : ''}${method === 'create' || method === 'update' ? `${methodName.toLowerCase()}` : ''});
+      return {
+        message: '${methodName} ${method}d successfully',
+        status: 'success',
+        data: result,
+      };
+    } catch (error) {
+      throw new AppError(400, error.message);
+    }
+  }
+}
+
+module.exports = ${method.charAt(0).toUpperCase() + method.slice(1)}${methodName}Service;
+`;
+
+    const repositoryContent = `// ${method}_${methodName}.repository.js
+const { ${methodName} } = require('../../models');
+
+class ${method.charAt(0).toUpperCase() + method.slice(1)}${methodName}Repository {
+  async ${method}(${method === 'find_one' || method === 'delete' || method === 'update' ? 'id, ' : ''}${method === 'create' || method === 'update' ? `${methodName.toLowerCase()}` : ''}) {
+    return ${method === 'create' ? `await ${methodName}.create(${methodName.toLowerCase()})` :
+        method === 'update' ? `await ${methodName}.update(${methodName.toLowerCase()}, { where: { id } })` :
+            method === 'find_one' ? `await ${methodName}.findByPk(id)` :
+                method === 'delete' ? `await ${methodName}.destroy({ where: { id } })` :
+                    `await ${methodName}.findAll()`};
+  }
+}
+
+module.exports = ${method.charAt(0).toUpperCase() + method.slice(1)}${methodName}Repository;
+`;
+
+    createFile(servicePath, serviceContent);
+    createFile(repositoryPath, repositoryContent);
+  });
 };
 
 const methodName = process.argv[2];

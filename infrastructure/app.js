@@ -1,29 +1,32 @@
 const express = require('express');
-require('express-async-errors');
 const cors = require('cors');
-const bodyParser = require('body-parser');
-const helmet = require('helmet');
-const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('./swaggerConfig');
-const routes = require('../src/app/routes/index');
-const { AppError } = require('../src/error/Errors');
+const passport = require('passport');
+const routes = require('../src/app/routes');
 require('dotenv').config();
-
-const baseURLCors = process.env.FRONTEND_URL.split(',');
-
+const cookieSession = require('cookie-session');
+const passportStrategy = require('../passport');
+const helmet = require('helmet');
+const bodyParser = require('body-parser');
 global._ = require('lodash');
+const baseURLCors = 'http://localhost:5173';
 
 class App {
-  server;
   constructor() {
     this.server = express();
     this.middlewares();
-    this.router();
-    this.errorMiddleware();
+    this.routes();
   }
 
   middlewares() {
-    this.server.use(helmet());
+    this.server.use(express.json());
+    this.server.use(cors());
+    this.server.use(
+      cookieSession({
+        name: 'session',
+        keys: ['cyberwolve'],
+        maxAge: 24 * 60 * 60 * 100,
+      }),
+    );
     this.server.use(
       cors({
         origin: baseURLCors,
@@ -33,43 +36,13 @@ class App {
         allowedHeaders: ['Content-Type', 'Authorization', 'X-Custom-Header'],
       }),
     );
-
-    this.server.use(express.json());
-    this.server.use(bodyParser.json());
-    this.server.use(bodyParser.urlencoded({ extended: true }));
-
-    this.server.use((req, res, next) => {
-      res.header('Access-Control-Allow-Origin', '*');
-      res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-      res.header('Access-Control-Allow-Headers', 'Content-Type');
-      next();
-    });
-
-    this.server.use(
-      '/api/v1/api-docs',
-      swaggerUi.serve,
-      swaggerUi.setup(swaggerSpec),
-    );
+    this.server.use(passport.initialize());
+    this.server.use(passport.session());
+    this.server.use(helmet());
   }
 
-  router() {
-    this.server.use('/api/v1', routes);
-  }
-
-  errorMiddleware() {
-    this.server.use((error, request, response, _) => {
-      if (error instanceof AppError) {
-        return response.status(error.statusCode).json({
-          status: 'error',
-          message: error.message,
-        });
-      }
-
-      return response.status(500).json({
-        status: 'error',
-        message: error.message,
-      });
-    });
+  routes() {
+    this.server.use(routes);
   }
 }
 

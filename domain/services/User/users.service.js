@@ -1,3 +1,5 @@
+const {format_date, user_fields_validation, validate_cpf_cnpj} = require("../../../utils/helpers");
+
 const { AppError } = require('../../../src/error/Errors');
 const { generateUUID } = require('../../../utils/uuidGenerator');
 const { userExists } = require('../../../utils/verifyUserExists');
@@ -5,11 +7,7 @@ const {
   clearSpecialCaracteres,
 } = require('../../../utils/clearSpecialCaracteres');
 const { hashPassword } = require('../../../utils/utilities');
-const {
-  user_fields_validation,
-  format_date,
-  validate_cpf_cnpj,
-} = require('../../../utils/helpers');
+
 
 const UserRepositories = require('../../repositories/User/UserRepositories');
 const UserGroupService = require('../UserGroup/UserGroupServices');
